@@ -1,0 +1,31 @@
+version: '3'
+services:
+  mongo:
+    image: mongo:6.0.12
+    ports:
+      - '28117:27017'
+    # volume limit? 
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: root
+    #   MONGO_INITDB_ROOT_PASSWORD: example 
+    volumes:
+      - mongo-data:/data/db
+    # restart if crash
+    restart: always # unless-stop  
+    # useful for real status + depends_on  
+    healthcheck:
+      test: mongo --eval 'db.runCommand("ping").ok' localhost:27017/test --quiet
+      interval: 10s
+      start_period: 30s
+    # /!\ avoid to get all resources from host  
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: '1000MB'
+    # logging 
+      # logging tool or driver
+      # log rotatation
+      # mongos logs to activate?       
+volumes:
+  mongo-data: {}
